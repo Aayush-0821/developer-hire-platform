@@ -13,6 +13,8 @@ import "dotenv/config";
 import morgan from "morgan";
 import dotenv from "dotenv";
 dotenv.config({ path: "../.env" });
+import passport from "passport";
+import "./utils/passport";
 
 const app: Express = express();
 
@@ -34,9 +36,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [
-      process.env.FRONTEND_URL || "http://localhost:3000",
-    ],
+    origin: [process.env.FRONTEND_URL || "http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
@@ -47,9 +47,24 @@ app.use(
       "Origin",
       "Accept",
     ],
-  }),
+  })
 );
-
+app.use(
+  require("express-session")({
+    secret: "TTL",
+    resave: true,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: false, // true if using HTTPS
+      sameSite: "lax", // "none" if cross-origin over HTTPS
+    },
+  })
+);
+app.use(passport.initialize() as any);
+app.use(passport.session());
+app.get("/auth/github", passport.authenticate("github", { scope: ["user"] }));
+app.get("/auth/github", passport.authenticate("google", { scope: ["user"] }));
 //error handling
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -75,11 +90,21 @@ app.get("/health", async (req, res) => {
   });
 });
 
+declare global {
+  namespace Express {
+    interface User {
+      id: string;
+      email?: string;
+      role?: string;
+    }
+  }
+}
+
 const errorHandler = (
   error: any,
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   console.log({
     error: error,
@@ -131,13 +156,12 @@ app.use((req, res) => {
   });
 });
 
-
-app.listen(process.env.PORT || 8000, ()=>{
-    console.log({
-        message: "application started on port 8000",
-        loggingLevel: "info",
-        error: null,
-      });
-      console.log("application started on port 8000");
+app.listen(process.env.PORT || 8000, () => {
+  console.log({
+    message: "application started on port 8000",
+    loggingLevel: "info",
+    error: null,
+  });
+  console.log("application started on port 8000");
 });
 export { app as default };

@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -45,17 +45,18 @@ enum FILE_TYPE {
 }
 
 model User {
-  id              String  @id @map("_id") @db.ObjectId
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
   name            String
   email           String  @unique
   password        String
   avatar          String?
-  phoneNumber     String  @unique
+  phoneNumber     String? @unique
   username        String  @unique
   role            ROLE    @default(CANDIDATE)
   roleId          String?
   bio             String?
   tagline         String?
+  refreshToken    String?
   linkedinProfile String?
 
   skills        Skill[]
@@ -65,16 +66,16 @@ model User {
 }
 
 model Skill {
-  id     String @id @map("_id") @db.ObjectId
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
   name   String
   userId String @db.ObjectId
   user   User   @relation(fields: [userId], references: [id])
 }
 
 model Interviewer {
-  id           String @id @map("_id") @db.ObjectId
-  organization String
-  company_role String
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  organization String?
+  company_role String?
 
   userId String @unique @db.ObjectId
   user   User   @relation(fields: [userId], references: [id])
@@ -87,12 +88,12 @@ model Interviewer {
 }
 
 model Candidate {
-  id                String @id @map("_id") @db.ObjectId
-  githubUserName    String
-  leetcodeUserName  String
-  codeforceUserName String
-  mediumUserName    String
-  resume            String
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  githubUserName    String?
+  leetcodeUserName  String?
+  codeforceUserName String?
+  mediumUserName    String?
+  resume            String?
 
   userId                   String                     @unique @db.ObjectId
   user                     User                       @relation(fields: [userId], references: [id])
@@ -105,7 +106,7 @@ model Candidate {
 }
 
 model InPlatformMessage {
-  id         String @id @map("_id") @db.ObjectId
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
   readRecipt READ   @default(UNSEEN)
   message    String
 
@@ -114,7 +115,7 @@ model InPlatformMessage {
 }
 
 model InterviewWishlist {
-  id                       String                     @id @map("_id") @db.ObjectId
+  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
   name                     String
   createdBy                String                     @db.ObjectId
   creator                  Interviewer                @relation(fields: [createdBy], references: [id])
@@ -122,7 +123,7 @@ model InterviewWishlist {
 }
 
 model InterviewWishlistMembers {
-  id                  String            @id @map("_id") @db.ObjectId
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
   candidateId         String            @db.ObjectId
   candidate           Candidate         @relation(fields: [candidateId], references: [id])
   projecPostId        String            @db.ObjectId
@@ -132,7 +133,7 @@ model InterviewWishlistMembers {
 }
 
 model JobPosting {
-  id              String           @id @map("_id") @db.ObjectId
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
   title           String
   description     String
   createdBy       String           @db.ObjectId
@@ -141,7 +142,7 @@ model JobPosting {
 }
 
 model InterviewInvite {
-  id            String      @id @map("_id") @db.ObjectId
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
   message       String
   interviewerId String      @db.ObjectId
   interviewer   Interviewer @relation(fields: [interviewerId], references: [id])
@@ -150,7 +151,7 @@ model InterviewInvite {
 }
 
 model Interview {
-  id                 String          @id @map("_id") @db.ObjectId
+  id                 String          @id @default(auto()) @map("_id") @db.ObjectId
   interviewRound     ROUND           @default(DSA)
   interviewStartDate DateTime
   interviewEndTime   DateTime
@@ -162,7 +163,7 @@ model Interview {
 }
 
 model Experience {
-  id           String     @id @map("_id") @db.ObjectId
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
   candidateId  String     @db.ObjectId
   candidate    Candidate  @relation(fields: [candidateId], references: [id])
   company      String
@@ -175,7 +176,7 @@ model Experience {
 }
 
 model ProjectPost {
-  id                       String                     @id @map("_id") @db.ObjectId
+  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
   description              String
   gitUrl                   String
   createdBy                String                     @db.ObjectId
@@ -186,7 +187,7 @@ model ProjectPost {
 }
 
 model JobApplication {
-  id           String            @id @map("_id") @db.ObjectId
+  id           String            @id @default(auto()) @map("_id") @db.ObjectId
   candidateId  String            @db.ObjectId
   candidate    Candidate         @relation(fields: [candidateId], references: [id])
   jobId        String            @db.ObjectId
@@ -196,7 +197,7 @@ model JobApplication {
 }
 
 model InterviewChat {
-  id          String    @id @map("_id") @db.ObjectId
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   message     String
   sentBy      String    @db.ObjectId
   interviewId String    @db.ObjectId
@@ -204,7 +205,7 @@ model InterviewChat {
 }
 
 model TaggedPeople {
-  id           String      @id @map("_id") @db.ObjectId
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
   userId       String      @db.ObjectId
   user         User        @relation(fields: [userId], references: [id])
   belongToPost String      @db.ObjectId
@@ -212,7 +213,7 @@ model TaggedPeople {
 }
 
 model Attachment {
-  id           String      @id @map("_id") @db.ObjectId
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   url          String
   type         FILE_TYPE   @default(IMG)
