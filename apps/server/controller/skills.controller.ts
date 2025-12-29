@@ -33,7 +33,7 @@ class SkillController {
         } catch (error:any) {
             console.log("Error in Adding Skill : ",error);
             return res
-            .status(500)
+            .status(200)
             .json(apiResponse(500,error.message,null));
         }
     }
@@ -73,7 +73,7 @@ class SkillController {
         } catch (error:any) {
             console.log("Error in Updating Skill : ",error);
             return res
-            .status(500)
+            .status(200)
             .json(apiResponse(500,error.message,null));
         }
     }
@@ -108,7 +108,7 @@ class SkillController {
         } catch (error:any) {
             console.log("Error in Removing Skill : ",error);
             return res
-            .status(500)
+            .status(200)
             .json(apiResponse(500,error.message,null));
         }
     }

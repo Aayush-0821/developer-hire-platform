@@ -41,7 +41,7 @@ class InPlatformMessageController {
     } catch (error: any) {
       console.error("Send Message Error:", error);
       return res
-        .status(500)
+        .status(200)
         .json(apiResponse(500, error.message, null));
     }
   }
@@ -71,7 +71,7 @@ class InPlatformMessageController {
     } catch (error: any) {
       console.error("Fetch Messages Error:", error);
       return res
-        .status(500)
+        .status(200)
         .json(apiResponse(500, error.message, null));
     }
   }
@@ -112,7 +112,7 @@ class InPlatformMessageController {
     } catch (error: any) {
       console.error("Mark Message Seen Error:", error);
       return res
-        .status(500)
+        .status(200)
         .json(apiResponse(500, error.message, null));
     }
   }
@@ -152,7 +152,7 @@ class InPlatformMessageController {
     } catch (error: any) {
       console.error("Delete Message Error:", error);
       return res
-        .status(500)
+        .status(200)
         .json(apiResponse(500, error.message, null));
     }
   }
@@ -187,7 +187,7 @@ class InPlatformMessageController {
     } catch (error: any) {
       console.error("Unread Count Error:", error);
       return res
-        .status(500)
+        .status(200)
         .json(apiResponse(500, error.message, null));
     }
   }
